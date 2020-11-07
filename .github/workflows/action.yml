@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the latest Docker image
+        run: docker build . --file Dockerfile --tag docker.pkg.github.com/mrtopgun/java-template/java-template:latest
+
+      - name: Docker login
+        run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish image
+        run: docker push docker.pkg.github.com/mrtopgun/java-template/java-template:latest
